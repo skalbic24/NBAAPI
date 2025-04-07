@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,8 +13,9 @@
             text-align: center;
             padding: 20px;
         }
-        .player {
-            margin: 15px;
+        .table-header {
+            background-color: #007BFF; /* Blue background */
+            color: white;
         }
         img {
             width: 120px; /* Image width */
@@ -22,8 +23,7 @@
             border-radius: 50%; /* Rounded images */
         }
         .button {
-            border-radius: 5px; /* Rounded buttons */
-            margin: 10px;
+            margin: 5px;
         }
     </style>
 </head>
@@ -31,56 +31,103 @@
 
     <h1>Player Management</h1>
     
-    <div class="container">
-        <div class="row" id="players"></div>
-    </div>
+    <table class="table">
+        <thead class="table-header">
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Player Name</th>
+                <th>Team</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="players"></tbody>
+    </table>
 
-    <button class="btn btn-success button" id="addPlayerBtn">Add Player</button>
-
-    <div>
-        <button class="btn btn-primary button" id="updatePlayerBtn">Update</button>
-        <button class="btn btn-danger button" id="deletePlayerBtn">Delete</button>
-    </div>
+    <button class="btn btn-success" id="addPlayerBtn">Add Player</button>
 
     <script>
-        // Example player data
-        const players = [
-            { id: 1, name: 'LeBron James', imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1UdAWA1zLjHIZs6vxINyQX5nC3eFysO_XmA&s" },
-            { id: 2, name: 'Luka Doncic', imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR9NXTarMvayylrP4GcT12pZFR_szG7sM6uw&s" },
-            // Add more players as needed
-        ];
+        let players = [];
+        let selectedPlayerId = null;
 
         function displayPlayers() {
             const playerContainer = document.getElementById('players');
             playerContainer.innerHTML = '';
             players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'col-md-3 player'; // Bootstrap column class
-                playerDiv.innerHTML = `
-                    <img src="${player.imageUrl}" alt="${player.name}">
-                    <p>${player.name}</p>
+                const playerRow = document.createElement('tr');
+                playerRow.innerHTML = `
+                    <td>${player.playerId}</td>
+                    <td><img src="${player.imageUrl}" alt="${player.playerName}"></td>
+                    <td>${player.playerName}</td>
+                    <td>${player.team}</td>
+					<td>
+					    <button class="btn btn-primary button" onclick="selectPlayer(${player.playerId})">Update</button>
+					    <button class="btn btn-danger button" onclick="deletePlayer(${player.playerId})">Delete</button>
+					</td>
                 `;
-                playerContainer.appendChild(playerDiv);
+                playerContainer.appendChild(playerRow);
             });
         }
 
-        document.getElementById('addPlayerBtn').addEventListener('click', () => {
-            // Logic to add a player (e.g., open a form)
-            alert('Add Player functionality not implemented.');
+        async function fetchPlayers() {
+            const response = await fetch('/players');
+            players = await response.json();
+            displayPlayers();
+        }
+
+        document.getElementById('addPlayerBtn').addEventListener('click', async () => {
+            const name = prompt("Enter player's name:");
+            const team = prompt("Enter player's team:");
+            const imageUrl = prompt("Enter player's image URL:");
+
+            const newPlayer = { playerName: name, team: team, imageUrl: imageUrl };
+            await fetch('/players', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newPlayer),
+            });
+            fetchPlayers(); // Refresh players
         });
 
-        document.getElementById('updatePlayerBtn').addEventListener('click', () => {
-            // Logic to update a player (e.g., open a form)
-            alert('Update Player functionality not implemented.');
-        });
+        function selectPlayer(playerId) {
+            selectedPlayerId = playerId;
+            const player = players.find(p => p.playerId === playerId);
+            if (player) {
+                const name = prompt("Enter new player's name:", player.playerName);
+                const team = prompt("Enter new player's team:", player.team);
+                const imageUrl = prompt("Enter new player's image URL:", player.imageUrl);
 
-        document.getElementById('deletePlayerBtn').addEventListener('click', () => {
-            // Logic to delete a player
-            alert('Delete Player functionality not implemented.');
-        });
+                const updatedPlayer = { playerId: selectedPlayerId, playerName: name, team: team, imageUrl: imageUrl };
+                updatePlayer(updatedPlayer);
+            }
+        }
 
-        // Initial display of players
-        displayPlayers();
+        async function updatePlayer(updatedPlayer) {
+            await fetch(`/player/${updatedPlayer.playerId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedPlayer),
+            });
+            fetchPlayers(); // Refresh players
+        }
+
+		async function deletePlayer(playerId) {
+		    const response = await fetch(`/players/${playerId}`, {
+		        method: 'DELETE',
+		    });
+		    if (response.ok) {
+		        fetchPlayers(); // Refresh players if deletion is successful
+		    } else {
+		        alert("Error deleting player.");
+		    }
+		}
+
+        // Initial fetch of players
+        fetchPlayers();
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

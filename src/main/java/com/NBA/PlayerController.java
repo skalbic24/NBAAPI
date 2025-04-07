@@ -49,12 +49,8 @@ public class PlayerController {
 	}
 	
 	@DeleteMapping("/players/{id}")
-	public ResponseEntity<?> deletePlayer (@PathVariable int id, @RequestBody Player player){
-		player.setPlayerId(id);
-		playerRepository.delete(player);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<?> deletePlayer(@PathVariable int id) {
+	    playerRepository.deleteById(id); // Use deleteById to remove the player
+	    return ResponseEntity.ok().build();
 	}
-	
-	
-
 }

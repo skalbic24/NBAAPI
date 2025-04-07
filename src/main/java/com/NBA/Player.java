@@ -66,10 +66,4 @@ public class Player {
 	public void setImageUrl(String imageUrl) {
 		ImageUrl = imageUrl;
 	}
-	
-	
-	
-	
-	
-
 }
