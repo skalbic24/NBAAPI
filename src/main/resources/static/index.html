@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #AEEEEE, #B0E0E6); /* Light blue gradient */
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .player {
+            margin: 15px;
+        }
+        img {
+            width: 120px; /* Image width */
+            height: 120px; /* Fixed height for uniformity */
+            border-radius: 50%; /* Rounded images */
+        }
+        .button {
+            border-radius: 5px; /* Rounded buttons */
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Player Management</h1>
+    
+    <div class="container">
+        <div class="row" id="players"></div>
+    </div>
+
+    <button class="btn btn-success button" id="addPlayerBtn">Add Player</button>
+
+    <div>
+        <button class="btn btn-primary button" id="updatePlayerBtn">Update</button>
+        <button class="btn btn-danger button" id="deletePlayerBtn">Delete</button>
+    </div>
+
+    <script>
+        // Example player data
+        const players = [
+            { id: 1, name: 'LeBron James', imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1UdAWA1zLjHIZs6vxINyQX5nC3eFysO_XmA&s" },
+            { id: 2, name: 'Luka Doncic', imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR9NXTarMvayylrP4GcT12pZFR_szG7sM6uw&s" },
+            // Add more players as needed
+        ];
+
+        function displayPlayers() {
+            const playerContainer = document.getElementById('players');
+            playerContainer.innerHTML = '';
+            players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'col-md-3 player'; // Bootstrap column class
+                playerDiv.innerHTML = `
+                    <img src="${player.imageUrl}" alt="${player.name}">
+                    <p>${player.name}</p>
+                `;
+                playerContainer.appendChild(playerDiv);
+            });
+        }
+
+        document.getElementById('addPlayerBtn').addEventListener('click', () => {
+            // Logic to add a player (e.g., open a form)
+            alert('Add Player functionality not implemented.');
+        });
+
+        document.getElementById('updatePlayerBtn').addEventListener('click', () => {
+            // Logic to update a player (e.g., open a form)
+            alert('Update Player functionality not implemented.');
+        });
+
+        document.getElementById('deletePlayerBtn').addEventListener('click', () => {
+            // Logic to delete a player
+            alert('Delete Player functionality not implemented.');
+        });
+
+        // Initial display of players
+        displayPlayers();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
